@@ -127,6 +127,12 @@ class $aeaac147d31ada5b$export$887967f05dc521ae extends $3d24867cd0334f1e$export
         if (this._p5.keyIsDown(68)) v.x += 1;
         return v;
     }
+    move(v) {
+        this.position.add(v.mult(this.speed));
+        const x = this._p5.constrain(this.position.x, 30, this._p5.windowWidth - 30);
+        const y = this._p5.constrain(this.position.y, 30, this._p5.windowHeight - 30);
+        this.position = this._p5.createVector(x, y);
+    }
     draw() {
         this.weapon.draw(this.position, this.size / 2);
         this._p5.strokeWeight(2);
