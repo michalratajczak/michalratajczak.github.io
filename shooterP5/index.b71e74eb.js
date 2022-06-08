@@ -529,43 +529,36 @@ function hmrAcceptRun(bundle, id) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 var _p5 = require("p5");
 var _p5Default = parcelHelpers.interopDefault(_p5);
-var _gameView = require("./views/gameView");
-var _menuView = require("./views/menuView");
-var _resultView = require("./views/resultView");
+var _menuScene = require("./scenes/menuScene");
+var _global = require("./global");
 const sketch = (p5)=>{
-    let currentView;
     p5.setup = ()=>{
         const canvas = p5.createCanvas(p5.windowWidth, p5.windowHeight);
         canvas.parent("app");
-        currentView = new _menuView.MenuView(p5);
+        _global.init(p5);
+        _global.setCurrentScene(new _menuScene.MenuScene());
     };
     p5.windowResized = ()=>{
         p5.resizeCanvas(p5.windowWidth, p5.windowHeight);
     };
     p5.draw = ()=>{
         p5.background(120);
-        try {
-            currentView.init();
-            currentView.draw();
-        } catch (e) {
-            if (e.name === 'GAME OVER') currentView = new _resultView.ResultView(p5, e.message);
-        }
+        const scene = _global.getCurrentScene();
+        scene.init();
+        scene.draw();
     };
     p5.keyPressed = ()=>{
-        try {
-            currentView.keyPressed();
-        } catch (e) {
-            if (e.name === 'MENU') currentView = new _menuView.MenuView(p5);
-            else if (e.name === 'GAME') currentView = new _gameView.GameView(p5);
-        }
+        const scene = _global.getCurrentScene();
+        scene.keyPressed();
     };
     p5.mouseClicked = ()=>{
-        currentView.mouseClicked();
+        const scene = _global.getCurrentScene();
+        scene.mouseClicked();
     };
 };
 new _p5Default.default(sketch);
 
-},{"p5":"7Uk5U","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./views/resultView":"54oYq","./views/menuView":"3gxxk","./views/gameView":"hwEbf"}],"7Uk5U":[function(require,module,exports) {
+},{"p5":"7Uk5U","./scenes/menuScene":"fjzJM","./global":"kHtAz","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7Uk5U":[function(require,module,exports) {
 var global = arguments[3];
 /*! p5.js v1.4.1 February 02, 2022 */ !function(e) {
     module.exports = e();
@@ -27952,7 +27945,214 @@ var global = arguments[3];
     ])(248);
 });
 
-},{}],"gkKU3":[function(require,module,exports) {
+},{}],"fjzJM":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "MenuScene", ()=>MenuScene
+);
+var _global = require("../global");
+var _gameScene = require("./gameScene");
+class MenuScene {
+    init = ()=>{};
+    draw = ()=>{
+        _global.p5.strokeWeight(0);
+        _global.p5.textSize(80);
+        _global.p5.textStyle(_global.p5.BOLD);
+        _global.p5.fill(_global.p5.color(130, 40, 0));
+        const title = 'ShooterP5';
+        _global.p5.text(title, _global.p5.windowWidth / 2 - _global.p5.textWidth(title) / 2, _global.p5.windowHeight / 4);
+        _global.p5.textStyle(_global.p5.NORMAL);
+        _global.p5.textSize(30);
+        _global.p5.fill(20);
+        const controlsMoving = 'Moving:   [W] [A] [S] [D]';
+        _global.p5.text(controlsMoving, _global.p5.windowWidth / 2 - _global.p5.textWidth(controlsMoving) / 2, _global.p5.windowHeight / 2);
+        const controlsMouse = 'Shooting:   Left Mouse Button';
+        _global.p5.text(controlsMouse, _global.p5.windowWidth / 2 - _global.p5.textWidth(controlsMouse) / 2, _global.p5.windowHeight / 2 + 40);
+        const controlsReloading = 'Reloading:   [R]';
+        _global.p5.text(controlsReloading, _global.p5.windowWidth / 2 - _global.p5.textWidth(controlsReloading) / 2, _global.p5.windowHeight / 2 + 80);
+        _global.p5.textStyle(_global.p5.NORMAL);
+        _global.p5.textSize(40);
+        const menuText = `Press [ SPACE ] to start game`;
+        _global.p5.text(menuText, _global.p5.windowWidth / 2 - _global.p5.textWidth(menuText) / 2, _global.p5.windowHeight * 3 / 4);
+    };
+    keyPressed = ()=>{
+        if (_global.p5.keyCode === 32) _global.setCurrentScene(new _gameScene.GameScene());
+    };
+    mouseClicked = ()=>{};
+}
+
+},{"../global":"kHtAz","./gameScene":"kPLao","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"kHtAz":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "p5", ()=>p5
+);
+parcelHelpers.export(exports, "init", ()=>init
+);
+parcelHelpers.export(exports, "restartGame", ()=>restartGame
+);
+parcelHelpers.export(exports, "getCurrentScene", ()=>getCurrentScene
+);
+parcelHelpers.export(exports, "setCurrentScene", ()=>setCurrentScene
+);
+parcelHelpers.export(exports, "getHero", ()=>getHero
+);
+parcelHelpers.export(exports, "getEnemies", ()=>getEnemies
+);
+parcelHelpers.export(exports, "addEnemy", ()=>addEnemy
+);
+parcelHelpers.export(exports, "delEnemy", ()=>delEnemy
+);
+parcelHelpers.export(exports, "getScore", ()=>getScore
+);
+parcelHelpers.export(exports, "addScore", ()=>addScore
+);
+parcelHelpers.export(exports, "getProjectiles", ()=>getProjectiles
+);
+parcelHelpers.export(exports, "addProjectile", ()=>addProjectile
+);
+parcelHelpers.export(exports, "delProjectile", ()=>delProjectile
+);
+parcelHelpers.export(exports, "getAnimations", ()=>getAnimations
+);
+parcelHelpers.export(exports, "addAnimation", ()=>addAnimation
+);
+parcelHelpers.export(exports, "delAnimation", ()=>delAnimation
+);
+var _p5 = require("p5");
+var _p5Default = parcelHelpers.interopDefault(_p5);
+var _hero = require("./models/player/hero");
+let p5;
+let _currentScene;
+let _hero1;
+let _enemies;
+let _score;
+let _projectiles;
+let _animations;
+const init = (P5)=>{
+    p5 = P5;
+    restartGame();
+};
+const restartGame = ()=>{
+    _hero1 = new _hero.Hero(2.5, 30, p5.createVector(p5.windowWidth / 2, p5.windowHeight / 2), 1);
+    _enemies = [];
+    _score = 0;
+    _projectiles = [];
+    _animations = [];
+};
+const getCurrentScene = ()=>_currentScene
+;
+const setCurrentScene = (scene)=>{
+    _currentScene = scene;
+};
+const getHero = ()=>_hero1
+;
+const getEnemies = ()=>_enemies
+;
+const addEnemy = (e)=>{
+    _enemies.push(e);
+};
+const delEnemy = (e)=>{
+    const idx = _enemies.indexOf(e);
+    if (idx >= 0) _enemies.splice(idx, 1);
+};
+const getScore = ()=>_score
+;
+const addScore = (scores)=>{
+    return _score += scores;
+};
+const getProjectiles = ()=>_projectiles
+;
+const addProjectile = (p)=>{
+    _projectiles.push(p);
+};
+const delProjectile = (p)=>{
+    const idx = _projectiles.indexOf(p);
+    if (idx >= 0) _projectiles.splice(idx, 1);
+};
+const getAnimations = ()=>_animations
+;
+const addAnimation = (a)=>{
+    _animations.push(a);
+};
+const delAnimation = (a)=>{
+    const idx = _animations.indexOf(a);
+    if (idx >= 0) _animations.splice(idx, 1);
+};
+
+},{"p5":"7Uk5U","./models/player/hero":"fz5ut","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"fz5ut":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Hero", ()=>Hero
+);
+var _global = require("../../global");
+var _unit = require("../base/unit");
+var _gun = require("../weapons/gun");
+class Hero extends _unit.Unit {
+    constructor(speed, size, position, health){
+        super(speed, size, position, health);
+        this.color = _global.p5.color(130, 40, 0);
+        this.weapon = new _gun.Gun();
+    }
+    getMoveDirection() {
+        const v = _global.p5.createVector(0, 0);
+        if (_global.p5.keyIsDown(87)) v.y -= 1;
+        if (_global.p5.keyIsDown(83)) v.y += 1;
+        if (_global.p5.keyIsDown(65)) v.x -= 1;
+        if (_global.p5.keyIsDown(68)) v.x += 1;
+        return v;
+    }
+    move(v) {
+        this.position.add(v.mult(this.speed));
+        const x = _global.p5.constrain(this.position.x, 30, _global.p5.windowWidth - 30);
+        const y = _global.p5.constrain(this.position.y, 30, _global.p5.windowHeight - 30);
+        this.position = _global.p5.createVector(x, y);
+    }
+    draw() {
+        this.weapon.draw(this.position, this.size / 2);
+        _global.p5.strokeWeight(2);
+        _global.p5.fill(this.color);
+        _global.p5.circle(this.position.x, this.position.y, this.size);
+    }
+    attack() {
+        this.weapon.attack(this);
+    }
+    reload() {
+        this.weapon.reload();
+    }
+}
+
+},{"../../global":"kHtAz","../base/unit":"6KpHd","../weapons/gun":"l1S5t","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"6KpHd":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Unit", ()=>Unit
+);
+var _global = require("../../global");
+class Unit {
+    constructor(speed, size, position, health){
+        this.speed = speed;
+        this.size = size;
+        this.position = position;
+        this.color = _global.p5.color(80);
+        this.health = health;
+        this.maxHealth = health;
+    }
+    move(v) {
+        this.position.add(v.mult(this.speed));
+    }
+    draw() {
+        //body
+        _global.p5.strokeWeight(2);
+        _global.p5.fill(this.color);
+        _global.p5.circle(this.position.x, this.position.y, this.size);
+        //health
+        _global.p5.textSize(16);
+        _global.p5.fill(0);
+        const healthText = Math.round(this.health / this.maxHealth * 100) + '%';
+        _global.p5.text(healthText, this.position.x - _global.p5.textWidth(healthText) / 2, this.position.y + 7);
+    }
+}
+
+},{"../../global":"kHtAz","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports) {
 exports.interopDefault = function(a) {
     return a && a.__esModule ? a : {
         default: a
@@ -27982,263 +28182,122 @@ exports.export = function(dest, destName, get) {
     });
 };
 
-},{}],"54oYq":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "ResultView", ()=>ResultView
-);
-class ResultView {
-    constructor(p5, result){
-        this.p5 = p5;
-        this.result = parseInt(result);
-    }
-    init = ()=>{};
-    draw = ()=>{
-        this.p5.strokeWeight(5);
-        this.p5.textSize(60);
-        this.p5.fill(60);
-        const resultText = `Your result: ${this.result}!`;
-        this.p5.text(resultText, this.p5.windowWidth / 2 - this.p5.textWidth(resultText) / 2, this.p5.windowHeight / 3);
-        this.p5.strokeWeight(0);
-        this.p5.textSize(40);
-        const menuText = `Press [ SPACE ] to go to main menu`;
-        this.p5.text(menuText, this.p5.windowWidth / 2 - this.p5.textWidth(menuText) / 2, this.p5.windowHeight * 2 / 3);
-    };
-    keyPressed = ()=>{
-        if (this.p5.keyCode === 32) {
-            const error = new Error();
-            error.name = 'MENU';
-            throw error;
-        }
-    };
-    mouseClicked = ()=>{};
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"3gxxk":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "MenuView", ()=>MenuView
-);
-class MenuView {
-    constructor(p5){
-        this.p5 = p5;
-    }
-    init = ()=>{};
-    draw = ()=>{
-        this.p5.strokeWeight(0);
-        this.p5.textSize(80);
-        this.p5.textStyle(this.p5.BOLD);
-        this.p5.fill(this.p5.color(130, 40, 0));
-        const title = 'ShooterP5';
-        this.p5.text(title, this.p5.windowWidth / 2 - this.p5.textWidth(title) / 2, this.p5.windowHeight / 4);
-        this.p5.textStyle(this.p5.NORMAL);
-        this.p5.textSize(30);
-        this.p5.fill(20);
-        const controlsMoving = 'Moving:   [W] [A] [S] [D]';
-        this.p5.text(controlsMoving, this.p5.windowWidth / 2 - this.p5.textWidth(controlsMoving) / 2, this.p5.windowHeight / 2);
-        const controlsMouse = 'Shooting:   Left Mouse Button';
-        this.p5.text(controlsMouse, this.p5.windowWidth / 2 - this.p5.textWidth(controlsMouse) / 2, this.p5.windowHeight / 2 + 40);
-        const controlsReloading = 'Reloading:   [R]';
-        this.p5.text(controlsReloading, this.p5.windowWidth / 2 - this.p5.textWidth(controlsReloading) / 2, this.p5.windowHeight / 2 + 80);
-        this.p5.textStyle(this.p5.NORMAL);
-        this.p5.textSize(40);
-        const menuText = `Press [ SPACE ] to start game`;
-        this.p5.text(menuText, this.p5.windowWidth / 2 - this.p5.textWidth(menuText) / 2, this.p5.windowHeight * 3 / 4);
-    };
-    keyPressed = ()=>{
-        if (this.p5.keyCode === 32) {
-            const error = new Error();
-            error.name = 'GAME';
-            throw error;
-        }
-    };
-    mouseClicked = ()=>{};
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"hwEbf":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "GameView", ()=>GameView
-);
-var _hero = require("../models/player/hero");
-var _hud = require("./hud");
-var _enemyService = require("../services/enemyService");
-var _enemyServiceDefault = parcelHelpers.interopDefault(_enemyService);
-class GameView {
-    constructor(p5){
-        this.p5 = p5;
-        this.isInitialized = false;
-    }
-    init = ()=>{
-        if (!this.isInitialized) {
-            this.hero = new _hero.Hero(this.p5, 2.5, 30, this.p5.createVector(this.p5.windowWidth / 2, this.p5.windowHeight / 2), 1);
-            this.enemies = [];
-            this.hud = new _hud.Hud();
-            this.score = 0;
-            this.isInitialized = true;
-        }
-    };
-    draw = ()=>{
-        try {
-            const es = _enemyServiceDefault.default();
-            const heroDirection = this.hero.getMoveDirection();
-            this.hero.move(heroDirection);
-            es.spawnEnemy(this.p5, this.enemies, this.hero);
-            es.moveEnemies(this.enemies, this.hero);
-            this.score += es.calculateDamage(this.enemies, this.hero);
-            es.drawEnemies(this.enemies);
-            this.hero.draw();
-            this.hud.draw(this.p5, this.hero, this.score);
-        } catch (e) {
-            if (e.message === 'GAME OVER') {
-                const error = new Error(this.score.toString());
-                error.name = 'GAME OVER';
-                throw error;
-            }
-        }
-    };
-    keyPressed = ()=>{
-        if (this.p5.keyCode === 82) this.hero.reload();
-    };
-    mouseClicked = ()=>{
-        this.hero.attack();
-    };
-}
-
-},{"../models/player/hero":"fz5ut","./hud":"j8u68","../services/enemyService":"3x6J9","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"fz5ut":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "Hero", ()=>Hero
-);
-var _unit = require("../base/unit");
-var _gun = require("../weapons/gun");
-class Hero extends _unit.Unit {
-    constructor(p5, speed, size, position, health){
-        super(p5, speed, size, position, health);
-        this.color = p5.color(130, 40, 0);
-        this.weapon = new _gun.Gun(p5);
-    }
-    getMoveDirection() {
-        const v = this._p5.createVector(0, 0);
-        if (this._p5.keyIsDown(87)) v.y -= 1;
-        if (this._p5.keyIsDown(83)) v.y += 1;
-        if (this._p5.keyIsDown(65)) v.x -= 1;
-        if (this._p5.keyIsDown(68)) v.x += 1;
-        return v;
-    }
-    move(v) {
-        this.position.add(v.mult(this.speed));
-        const x = this._p5.constrain(this.position.x, 30, this._p5.windowWidth - 30);
-        const y = this._p5.constrain(this.position.y, 30, this._p5.windowHeight - 30);
-        this.position = this._p5.createVector(x, y);
-    }
-    draw() {
-        this.weapon.draw(this.position, this.size / 2);
-        this._p5.strokeWeight(2);
-        this._p5.fill(this.color);
-        this._p5.circle(this.position.x, this.position.y, this.size);
-    }
-    attack() {
-        this.weapon.attack(this.position);
-    }
-    reload() {
-        this.weapon.reload();
-    }
-}
-
-},{"../base/unit":"6KpHd","../weapons/gun":"l1S5t","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"6KpHd":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "Unit", ()=>Unit
-);
-class Unit {
-    constructor(p5, speed, size, position, health){
-        this._p5 = p5;
-        this.speed = speed;
-        this.size = size;
-        this.position = position;
-        this.color = p5.color(80);
-        this.health = health;
-        this.maxHealth = health;
-    }
-    move(v) {
-        this.position.add(v.mult(this.speed));
-    }
-    draw() {
-        //body
-        this._p5.strokeWeight(2);
-        this._p5.fill(this.color);
-        this._p5.circle(this.position.x, this.position.y, this.size);
-        //health
-        this._p5.textSize(16);
-        this._p5.fill(0);
-        const healthText = Math.round(this.health / this.maxHealth * 100) + '%';
-        this._p5.text(healthText, this.position.x - this._p5.textWidth(healthText) / 2, this.position.y + 7);
-    }
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"l1S5t":[function(require,module,exports) {
+},{}],"l1S5t":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "Gun", ()=>Gun
 );
+var _global = require("../../global");
+var _bloodAfterShoot = require("../animations/bloodAfterShoot");
 var _weapon = require("../base/weapon");
+var _bullet = require("../projectiles/bullet");
 class Gun extends _weapon.RangedWeapon {
-    constructor(p5){
-        super(p5, 9, 600, 8, 5);
+    constructor(){
+        super(9, 60, 8, 5);
     }
-    shot(target, position) {
-        const gun = target.sub(position).normalize();
-        const shot = position.copy().add(gun);
-        this._shots.push({
-            position: position,
-            vector: gun.copy().normalize().mult(this.weaponSpeed),
-            attack: shot.copy()
-        });
-    }
-    _drawBullets() {
-        const shotsToDelete = [];
-        for (let s of this._shots){
-            s.attack.add(s.vector);
-            if (Math.abs(s.attack.x) > this._p5.width || Math.abs(s.attack.y) > this._p5.height) shotsToDelete.push(s);
-            else this._p5.circle(s.attack.x, s.attack.y, 3);
-        }
-        for (let s1 of shotsToDelete){
-            const idx = this._shots.indexOf(s1);
-            this._shots.splice(idx, 1);
-        }
+    shot(unit1, target) {
+        const gun = target.sub(unit1.position).normalize();
+        const bullet1 = new _bullet.Bullet(unit1.position.copy(), gun.copy().normalize().mult(this.weaponSpeed), 3, unit1, _global.p5.color(10), (unit, bullet)=>this.onBulletCollision(unit, bullet)
+        , (bullet)=>this.onBulletDestroy(bullet)
+        );
+        _global.addProjectile(bullet1);
     }
     draw(position, unitSize) {
-        this._drawBullets();
-        const target = this._p5.createVector(this._p5.mouseX, this._p5.mouseY);
+        super.draw(position, unitSize);
+        const target = _global.p5.createVector(_global.p5.mouseX, _global.p5.mouseY);
         const gun = target.sub(position).normalize().mult(unitSize + 10).add(position);
-        this._p5.stroke(0);
-        this._p5.strokeWeight(5);
-        this._p5.line(position.x, position.y, gun.x, gun.y);
+        _global.p5.stroke(0);
+        _global.p5.strokeWeight(5);
+        _global.p5.line(position.x, position.y, gun.x, gun.y);
+    }
+    onBulletCollision(unit, bullet) {
+        this.dealDamage(unit);
+        _global.addAnimation(new _bloodAfterShoot.BloodAfterShoot(bullet.projectile, bullet.speed));
+        this.onBulletDestroy(bullet);
+    }
+    onBulletDestroy(bullet) {
+        _global.delProjectile(bullet);
     }
 }
 
-},{"../base/weapon":"aJt71","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"aJt71":[function(require,module,exports) {
+},{"../../global":"kHtAz","../animations/bloodAfterShoot":"3AXhA","../base/weapon":"aJt71","../projectiles/bullet":"3Qw10","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"3AXhA":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "BloodAfterShoot", ()=>BloodAfterShoot
+);
+var _global = require("../../global");
+var _animation = require("../base/animation");
+class BloodAfterShoot {
+    constructor(position, direction){
+        this.duration = 180;
+        this.step = 0;
+        this.position = position.copy();
+        this.direction = direction.copy().mult(0.6);
+        this.type = _animation.AnimationType.dynamic;
+    }
+    draw() {
+        if (this.step >= this.duration) {
+            _global.delAnimation(this);
+            return;
+        }
+        _global.p5.strokeWeight(0);
+        if (this.step < 20) {
+            _global.p5.fill(_global.p5.color(230, 0, 0, 255));
+            _global.p5.circle(this.position.x, this.position.y, 5 + this.step / 2);
+            this.position.add(this.direction);
+        } else if (this.step === 20) this.type = _animation.AnimationType.static;
+        else if (this.step < 100) {
+            _global.p5.fill(_global.p5.color(250 - this.step, 0, 0, 255));
+            _global.p5.circle(this.position.x, this.position.y, 15);
+        } else {
+            _global.p5.fill(_global.p5.color(150, 0, 0, 255 - (this.step - 100) * 2.55));
+            _global.p5.circle(this.position.x, this.position.y, 15);
+        }
+        this.step++;
+    }
+}
+
+},{"../../global":"kHtAz","../base/animation":"bsa8U","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"bsa8U":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "AnimationType", ()=>AnimationType
+);
+let AnimationType;
+(function(AnimationType1) {
+    AnimationType1[AnimationType1["static"] = 1] = "static";
+    AnimationType1[AnimationType1["dynamic"] = 2] = "dynamic";
+})(AnimationType || (AnimationType = {}));
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"aJt71":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "RangedWeapon", ()=>RangedWeapon
 );
+var _global = require("../../global");
 class RangedWeapon {
-    constructor(p5, maxAmmo, reloadingTime, weaponSpeed, damage){
-        this._p5 = p5;
+    constructor(maxAmmo, reloadingTime, weaponSpeed, damage){
         this.maxAmmo = maxAmmo;
         this.ammo = maxAmmo;
         this.reloadingTime = reloadingTime;
+        this.reloadingStep = 0;
         this.weaponSpeed = weaponSpeed;
-        this._shots = [];
         this.damage = damage;
+        this._isReloading = false;
     }
-    shot(target, position) {}
-    draw(position, unitSize) {}
-    attack(position) {
+    shot(unit, target) {}
+    draw(position, unitSize) {
+        if (this._isReloading) {
+            if (this.reloadingStep === this.reloadingTime) {
+                this._isReloading = false;
+                this.ammo = this.maxAmmo;
+            }
+            this.reloadingStep++;
+        }
+    }
+    attack(attacker) {
         if (!this._isReloading && this.ammo > 0) {
-            const target = this._p5.createVector(this._p5.mouseX, this._p5.mouseY);
-            this.shot(target, position);
+            const target = _global.p5.createVector(_global.p5.mouseX, _global.p5.mouseY);
+            this.shot(attacker, target);
             this.ammo--;
         }
         if (this.ammo <= 0) this.reload();
@@ -28246,11 +28305,7 @@ class RangedWeapon {
     reload() {
         if (!this._isReloading) {
             this._isReloading = true;
-            const timeout = setTimeout(()=>{
-                this.ammo = this.maxAmmo;
-                this._isReloading = false;
-                clearTimeout(timeout);
-            }, this.reloadingTime / this._p5.frameRate() * 100);
+            this.reloadingStep = 0;
         }
     }
     isReloading() {
@@ -28259,63 +28314,155 @@ class RangedWeapon {
     getMaxAmmo() {
         return this.maxAmmo;
     }
-    getAttacks() {
-        return this._shots;
-    }
-    dealDamage(enemy, attack) {
+    dealDamage(enemy) {
         enemy.health -= this.damage;
-        this._shots.splice(this._shots.indexOf(attack), 1);
     }
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"j8u68":[function(require,module,exports) {
+},{"../../global":"kHtAz","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"3Qw10":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Bullet", ()=>Bullet
+);
+var _global = require("../../global");
+class Bullet {
+    constructor(start, speed, size, owner, color, onCollision, onDestroy){
+        this.start = start;
+        this.speed = speed;
+        this.projectile = start.copy();
+        this.size = size;
+        this.owner = owner;
+        this.color = color;
+        this.onCollision = onCollision;
+        this.onDestroy = onDestroy;
+        this.range = _global.p5.windowWidth > _global.p5.windowHeight ? _global.p5.windowWidth : _global.p5.windowHeight;
+    }
+    move() {
+        if (this.projectile.dist(this.start) <= this.range) this.projectile.add(this.speed);
+        else this.onDestroy(this);
+    }
+    draw() {
+        _global.p5.fill(this.color);
+        _global.p5.circle(this.projectile.x, this.projectile.y, this.size);
+    }
+}
+
+},{"../../global":"kHtAz","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"kPLao":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "GameScene", ()=>GameScene
+);
+var _hud = require("../views/hud");
+var _enemyService = require("../services/enemyService");
+var _enemyServiceDefault = parcelHelpers.interopDefault(_enemyService);
+var _global = require("../global");
+var _projectileService = require("../services/projectileService");
+var _projectileServiceDefault = parcelHelpers.interopDefault(_projectileService);
+var _resultScene = require("./resultScene");
+var _animationService = require("../services/animationService");
+var _animationServiceDefault = parcelHelpers.interopDefault(_animationService);
+class GameScene {
+    constructor(){
+        this.isInitialized = false;
+    }
+    init = ()=>{
+        if (!this.isInitialized) {
+            _global.restartGame();
+            this.hud = new _hud.Hud();
+            this.isInitialized = true;
+        }
+    };
+    draw = ()=>{
+        try {
+            const es = _enemyServiceDefault.default();
+            const ps = _projectileServiceDefault.default();
+            const as = _animationServiceDefault.default();
+            //calculations
+            const heroDirection = _global.getHero().getMoveDirection();
+            _global.getHero().move(heroDirection);
+            const newEnemy = es.createEnemy();
+            if (newEnemy) es.spawnEnemy(newEnemy);
+            es.moveEnemies();
+            ps.moveProjectiles();
+            _global.addScore(es.calculateDamage());
+            //drawing
+            as.drawStaticAnimations();
+            es.drawEnemies();
+            ps.drawProjectiles();
+            _global.getHero().draw();
+            as.drawDynamicAnimations();
+            this.hud.draw(_global.p5, _global.getHero(), _global.getScore());
+        } catch (e) {
+            if (e.message === 'GAME OVER') _global.setCurrentScene(new _resultScene.ResultScene());
+            else console.error(e);
+        }
+    };
+    keyPressed = ()=>{
+        if (_global.p5.keyCode === 82) _global.getHero().reload();
+    };
+    mouseClicked = ()=>{
+        _global.getHero().attack();
+    };
+}
+
+},{"../views/hud":"j8u68","../services/enemyService":"3x6J9","../global":"kHtAz","../services/projectileService":"5yDll","./resultScene":"7KXVe","../services/animationService":"l0JRn","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"j8u68":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "Hud", ()=>Hud
 );
+var _global = require("../global");
 class Hud {
-    draw(p5, hero, score) {
-        p5.fill(0);
-        p5.textSize(24);
-        p5.text('AMMO:', 20, p5.windowHeight - 20);
-        p5.text(`SCORE: ${score}`, 20, 40);
-        const maxAmmo = hero.weapon.getMaxAmmo();
-        const ammo = hero.weapon.ammo;
-        for(let i = 1; i <= maxAmmo; i++){
-            if (i > ammo) p5.noFill();
-            p5.rect(90 + 20 * i, p5.windowHeight - 45, 13, 30);
+    draw() {
+        _global.p5.strokeWeight(2);
+        _global.p5.fill(0);
+        _global.p5.textSize(24);
+        _global.p5.text('AMMO:', 20, _global.p5.windowHeight - 20);
+        _global.p5.text(`SCORE: ${_global.getScore()}`, 20, 40);
+        const weapon = _global.getHero().weapon;
+        for(let i = 1; i <= weapon.getMaxAmmo(); i++){
+            if (i > weapon.ammo) _global.p5.noFill();
+            _global.p5.rect(90 + 20 * i, _global.p5.windowHeight - 45, 13, 30);
+        }
+        if (weapon.isReloading()) {
+            _global.p5.fill(0);
+            _global.p5.strokeWeight(0);
+            _global.p5.rect(110, _global.p5.windowHeight - 65, weapon.reloadingStep / weapon.reloadingTime * weapon.getMaxAmmo() * 20 - 7, 10);
         }
     }
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"3x6J9":[function(require,module,exports) {
+},{"../global":"kHtAz","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"3x6J9":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
+var _global = require("../global");
 var _zombie = require("../models/enemies/zombie");
 const enemyService = ()=>{
-    const spawnEnemy = (p5, enemies, hero)=>{
-        if (p5.frameCount % 120 === 0) {
-            const outerSide = p5.random([
-                'x',
-                'y'
-            ]);
-            let x, y;
-            if (outerSide === 'x') {
-                x = p5.random(0, 1) > 0.5 ? p5.windowWidth + 100 : -100;
-                y = p5.random(0, p5.windowHeight);
-            } else {
-                x = p5.random(0, p5.windowWidth);
-                y = p5.random(0, 1) > 0.5 ? p5.windowHeight + 100 : -100;
-            }
-            enemies.push(new _zombie.Zombie(p5, 1, 50, p5.createVector(x, y), 30));
-        }
+    const createEnemy = ()=>{
+        if (_global.p5.frameCount % 120 == 0) return new _zombie.Zombie(1.2, 50, _global.p5.createVector(0, 0), 30);
+        else return null;
     };
-    const moveEnemies = (enemies, hero)=>{
+    const spawnEnemy = (enemy)=>{
+        const outerSide = _global.p5.random([
+            'x',
+            'y'
+        ]);
+        let x, y;
+        if (outerSide === 'x') {
+            x = _global.p5.random(0, 1) > 0.5 ? _global.p5.windowWidth + 100 : -100;
+            y = _global.p5.random(0, _global.p5.windowHeight);
+        } else {
+            x = _global.p5.random(0, _global.p5.windowWidth);
+            y = _global.p5.random(0, 1) > 0.5 ? _global.p5.windowHeight + 100 : -100;
+        }
+        enemy.position = _global.p5.createVector(x, y);
+        _global.addEnemy(enemy);
+    };
+    const moveEnemies = ()=>{
         const enemiesToAbsorb = [];
-        for (const enemy of enemies){
-            const v = hero.position.copy().sub(enemy.position).normalize().mult(enemy.speed);
+        for (const enemy of _global.getEnemies()){
+            const v = _global.getHero().position.copy().sub(enemy.position).normalize().mult(enemy.speed);
             enemy.position.add(v);
-            for (const other of enemies){
+            for (const other of _global.getEnemies()){
                 if (enemy === other) continue;
                 if (enemiesToAbsorb.some((e)=>e.absorbed === enemy
                 )) continue;
@@ -28333,47 +28480,114 @@ const enemyService = ()=>{
         for (const x of enemiesToAbsorb){
             x.grow.size += 5;
             x.speed *= 0.90;
-            enemies.splice(enemies.indexOf(x.absorbed), 1);
+            _global.delEnemy(x.absorbed);
         }
     };
-    const drawEnemies = (enemies)=>{
-        for (const enemy of enemies)enemy.draw();
+    const drawEnemies = ()=>{
+        for (const enemy of _global.getEnemies())enemy.draw();
     };
-    const calculateDamage = (enemies, hero)=>{
-        if (enemies.some((e)=>hero.position.dist(e.position) < e.size / 2 + hero.size / 2
+    const calculateDamage = ()=>{
+        if (_global.getEnemies().some((e)=>_global.getHero().position.dist(e.position) < e.size / 2 + _global.getHero().size / 2
         )) throw new Error("GAME OVER");
         const deadEnemies = [];
-        for (const enemy of enemies){
-            for (const attack of hero.weapon.getAttacks())if (enemy.position.dist(attack.attack) < enemy.size / 2) {
-                hero.weapon.dealDamage(enemy, attack);
+        for (const enemy of _global.getEnemies()){
+            for (const projectile of _global.getProjectiles())if (enemy.position.dist(projectile.projectile) < enemy.size / 2) {
+                projectile.onCollision(enemy, projectile);
                 if (enemy.health <= 0) deadEnemies.push(enemy);
             }
         }
-        for (let enemy1 of deadEnemies)enemies.splice(enemies.indexOf(enemy1), 1);
+        for (let enemy1 of deadEnemies)_global.delEnemy(enemy1);
         return deadEnemies.length;
     };
     return {
         spawnEnemy,
         moveEnemies,
         drawEnemies,
-        calculateDamage
+        calculateDamage,
+        createEnemy
     };
 };
 exports.default = enemyService;
 
-},{"../models/enemies/zombie":"5EzxG","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"5EzxG":[function(require,module,exports) {
+},{"../global":"kHtAz","../models/enemies/zombie":"5EzxG","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"5EzxG":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "Zombie", ()=>Zombie
 );
+var _global = require("../../global");
 var _unit = require("../base/unit");
 class Zombie extends _unit.Unit {
-    constructor(p5, speed, size, position, health){
-        super(p5, speed, size, position, health);
-        this.color = p5.color(50, 150, 0);
+    constructor(speed, size, position, health){
+        super(speed, size, position, health);
+        this.color = _global.p5.color(50, 150, 0);
     }
 }
 
-},{"../base/unit":"6KpHd","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["7mgxS","h7u1C"], "h7u1C", "parcelRequire5175")
+},{"../../global":"kHtAz","../base/unit":"6KpHd","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"5yDll":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _global = require("../global");
+const projectileService = ()=>{
+    const moveProjectiles = ()=>{
+        for (const projectile of _global.getProjectiles())projectile.move();
+    };
+    const drawProjectiles = ()=>{
+        for (const projectile of _global.getProjectiles())projectile.draw();
+    };
+    return {
+        moveProjectiles,
+        drawProjectiles
+    };
+};
+exports.default = projectileService;
+
+},{"../global":"kHtAz","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"7KXVe":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "ResultScene", ()=>ResultScene
+);
+var _global = require("../global");
+var _menuScene = require("./menuScene");
+class ResultScene {
+    init = ()=>{};
+    draw = ()=>{
+        _global.p5.strokeWeight(5);
+        _global.p5.textSize(60);
+        _global.p5.fill(60);
+        const resultText = `Your result: ${_global.getScore()}!`;
+        _global.p5.text(resultText, _global.p5.windowWidth / 2 - _global.p5.textWidth(resultText) / 2, _global.p5.windowHeight / 3);
+        _global.p5.strokeWeight(0);
+        _global.p5.textSize(40);
+        const menuText = `Press [ SPACE ] to go to main menu`;
+        _global.p5.text(menuText, _global.p5.windowWidth / 2 - _global.p5.textWidth(menuText) / 2, _global.p5.windowHeight * 2 / 3);
+    };
+    keyPressed = ()=>{
+        if (_global.p5.keyCode === 32) _global.setCurrentScene(new _menuScene.MenuScene());
+    };
+    mouseClicked = ()=>{};
+}
+
+},{"../global":"kHtAz","./menuScene":"fjzJM","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"l0JRn":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _global = require("../global");
+var _animation = require("../models/base/animation");
+const animationService = ()=>{
+    const drawDynamicAnimations = ()=>{
+        for (const animation of _global.getAnimations().filter((a)=>a.type === _animation.AnimationType.dynamic
+        ))animation.draw();
+    };
+    const drawStaticAnimations = ()=>{
+        for (const animation of _global.getAnimations().filter((a)=>a.type === _animation.AnimationType.static
+        ))animation.draw();
+    };
+    return {
+        drawDynamicAnimations,
+        drawStaticAnimations
+    };
+};
+exports.default = animationService;
+
+},{"../global":"kHtAz","../models/base/animation":"bsa8U","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["7mgxS","h7u1C"], "h7u1C", "parcelRequire5175")
 
 //# sourceMappingURL=index.b71e74eb.js.map
